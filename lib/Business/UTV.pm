@@ -7,14 +7,14 @@ use LWP::UserAgent;
 use HTTP::Request::Common;
 use URI::Escape;
 
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 our $errstr = undef;
 
 sub login
 {
 	my ( $class , $username , $password , $atts ) = @_;
 
-	$errstr = undef;
+	errstr( "" );
 	
 	my $name = $atts->{"name"};
 	my $login_url = "https://ssl2.u.tv/clicksilveraccountie/gologin.asp";
@@ -28,16 +28,19 @@ sub login
 	my $login_request = $ua->post( $login_url , 
 				{ "id" => $username , "password" => $password } ,
 				"Referer" => $newindex_url );
-				
+
+	if( $login_request->is_error() )
+	{
+		errstr( "Login failed : http problem" );
+		return undef;
+	}
 
 	my $login = $login_request->content();
-
 	my %data = ();
 
-	unless( $login =~ /$name/ )
+	unless( $login =~ /\Q$name\E/ )
 	{
-		$errstr = "Login failed";
-		warn( $errstr );
+		errstr( "Login failed : your name '$name' not matched" );
 		return undef;
 	}
 
@@ -64,20 +67,27 @@ sub login
 sub usage
 {
 	my ( $self ) = @_;
-	
-	$errstr = undef;
+
+	errstr( "" );
 	
 	my $upload;
 	my $download;
 
 	my $usage_request = $self->{"ua"}->get( $self->{"usage_url"} );
-	my $usage = $usage_request->content();
 
-	if( $usage =~ /Incoming:\s*(\d+(\.\d+)?MB)/ )
+        if( $usage_request->is_error() )
+        {
+                errstr( "Usage failed : http problem" );
+                return undef;
+        }
+
+	my $usage = $usage_request->content();
+	
+	if( $usage =~ /Incoming:\s*(\d+(\.\d+)?)MB/ )
 	{
 		$upload = $1;
 	}
-	if( $usage =~ /Outgoing:\s*(\d+(\.\d+)?MB)/ )
+	if( $usage =~ /Outgoing:\s*(\d+(\.\d+)?)MB/ )
 	{
 		$download = $1;
 	}
@@ -88,8 +98,7 @@ sub usage
 	}
 	else
 	{
-		$errstr = "Could not retrieve upload and download usage";
-		warn( $errstr );
+		errstr( "Could not retrieve upload and download usage" );
 		return undef;
 	}
 }	
@@ -99,7 +108,8 @@ sub current_statement
 {
 	my ( $self ) = @_;
 
-	$errstr = undef;
+	errstr( "" );
+	
 	my $total = undef;
 	my $mytotal = 0;
 	my @calls = ();
@@ -156,14 +166,12 @@ sub current_statement
 
 	if( !defined( $total ) )
 	{
-		$errstr = "Could not find their total";
-		warn( $errstr );
+		errstr( "Could not find their total" );
 		return undef;
 	}
 	if( abs($total-$mytotal) > 0.1 )
 	{
-		$errstr = "I calculated total of $mytotal but they said total is $total";
-		warn( $errstr );
+		errstr( "I calculated total of $mytotal but they said total is $total" );
 		return undef;
 	}
 	return ( $total , \@calls );
@@ -171,21 +179,36 @@ sub current_statement
 
 sub errstr
 {
+	my ( $error ) = @_;
+	
+	if( defined( $error ) )
+	{
+		$errstr = $error;
+		if( length( $errstr ) )
+		{
+			warn( $errstr );
+		}
+		else
+		{
+			$errstr = undef;
+		}
+	}
 	return $errstr;
 }
 
 =head1 NAME 
 
-Business::UTV - Perl module for retrieiving UTV internet account information
+Business::UTV - Module for retrieiving UTV internet account information
 
 =head1 SYNOPSIS
 
  use Business::UTV;
  my $utv = Business::UTV->login( $id , $password , { "name" => "me" } );
  my $usage = $utv->usage();
- print "Upload = " . $usage->{"upload"} . "\n";
+ print "Upload = " . $usage->{"upload"} . "MB\n";
 
 =head1 DESCRIPTION
+
 This module enables you to access your UTV account information using perl.
 
 Currently the only supported data is your current monthly upload/download
@@ -213,7 +236,7 @@ On failure undef is returned and an error message stored in $Business::UTV::errs
 This method retrieves the accounts current upload and download in
 megabytes as a hash reference.
 
-On failure undef is returned. Any error message may be retrieved using $utv->errstr()
+On failure undef is returned and an error message is stored in $Business::UTV::errstr
 
 =head2 current_statement
 
@@ -231,14 +254,7 @@ fields
  length
  cost
 
-On failure undef is returned. Any error message may be retrieved using $utv->errstr();
-
-=head2 errstr
-
-$utv->errstr();
-
-This method returns any error string set by the last method call or undef
-if there was no error.
+On failure undef is returned and an error message is stored in $Business::UTV::errstr
 
 =head1 LIMITATIONS
 

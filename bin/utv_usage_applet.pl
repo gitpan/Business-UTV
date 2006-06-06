@@ -56,9 +56,6 @@ sub update_text
 	my $up = $usage->{"upload"};
 	my $down = $usage->{"download"};
 
-	$up =~ s/MB$//;
-	$down =~ s/MB$//;
-
 	Gtk2::Label::set_text( $label , strftime( "%H:%M" , localtime() ) . " Up " . int($up) . " Down " . int($down ) );
 	
 	return 1;
