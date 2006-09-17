@@ -8,7 +8,7 @@ use Test::NoWarnings;
 use Test::MockObject;
 use HTTP::Response;
 
-use Test::More tests => 35;
+use Test::More tests => 42;
 
 
 BEGIN
@@ -31,7 +31,9 @@ BEGIN
 				HTTP::Response->new( "200" , "missing a real post" ,  [] ,
 						"Incoming: 12MB Outgoing: 630.00MB" ),
 				HTTP::Response->new( "200" , "missing a real post" ,  [] ,
-						"Incoming:12.01MB) Outgoing: 98MB" )
+						"Incoming:12.01MB) Outgoing: 98MB" ),
+				HTTP::Response->new( "200" , "missing a real post" ,  [] ,
+						"Incoming:0MB Outgoing: 0MB" )
 			);
 
 	use_ok( "Business::UTV" );
@@ -56,6 +58,8 @@ test_failure( "Make sure usage fails as only download is available" );
 test_success( "131.12" , "124.230" , "Make sure spaces are optional and more than one is allowed" );
 test_success( "12" , "630.00" , "Make sure integer upload is allowed and trailing 0 is preserved" );
 test_success( "12.01" , "98" , "Make sure integer download is allowed" );
+
+test_success( "0" , "0" , "Make sure zero upload and download is allowed" );
 
 sub test_failure
 {

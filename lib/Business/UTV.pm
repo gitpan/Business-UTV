@@ -7,7 +7,7 @@ use LWP::UserAgent;
 use HTTP::Request::Common;
 use URI::Escape;
 
-our $VERSION = 0.02;
+our $VERSION = 0.03;
 our $errstr = undef;
 
 sub login
@@ -92,7 +92,7 @@ sub usage
 		$download = $1;
 	}
 
-	if( $upload && $download )
+	if( defined($upload) && defined($download) )
 	{
 		return { "upload" => $upload , "download" => $download };
 	}
@@ -274,6 +274,7 @@ provided under NO GUARANTEE, explicit or implied.
 =head1 SEE ALSO
 
 utv_usage_applet.pl
+utv_usage_tray.pl
 
 =cut
 

@@ -1,5 +1,5 @@
 bin/utv_usage_applet.pl
-Business-UTV-0.02.tar.gz
+bin/utv_usage_tray.pl
 Changes
 lib/Business/UTV.pm
 Makefile.PL
