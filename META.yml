@@ -1,12 +1,13 @@
 # http://module-build.sourceforge.net/META-spec.html
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
 name:         Business-UTV
-version:      0.03
+version:      0.04
+license:      perl
 version_from: lib/Business/UTV.pm
 installdirs:  site
 requires:
     LWP:                           0
-    Net::SSLeay:                   0
+    Crypt::SSLeay:                 0
     Test::MockObject:              0
     Test::NoWarnings:              0
     Test::Warn:                    0

@@ -4,7 +4,7 @@ use strict;
 use ExtUtils::MakeMaker;
 
 my @bins = ();
-my @libs = ( "Test::MockObject" , "Test::Warn" , "Test::NoWarnings" , "LWP" , "Net::SSLeay" , "URI::Escape" );
+my @libs = ( "Test::MockObject" , "Test::Warn" , "Test::NoWarnings" , "LWP" , "Crypt::SSLeay","URI::Escape" );
 
 my $install_gnome_bin = prompt( "Do you wish to install the gnome2 applet?" , "n" );
 

@@ -6,6 +6,7 @@ use warnings;
 use Win32::GUI;
 use Business::UTV;
 
+$SIG{QUIT} = "DEFAULT";
 
 # you need to add your utv id/password and your name
 # your name is used to verify the login so it should

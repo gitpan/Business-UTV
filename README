@@ -26,13 +26,17 @@ DEPENDENCIES
 This module requires these other modules and libraries:
 
 LWP
-Net::SSLeay
+Crypt::SSLeay
 URI::Escape
 
 The gnome tray applet also requires
 
 Gtk2::TrayIcon
 POSIX
+
+The window system tray also requires
+
+Win32::GUI
 
 COPYRIGHT AND LICENCE
 
