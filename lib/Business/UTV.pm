@@ -7,7 +7,7 @@ use LWP::UserAgent;
 use HTTP::Request::Common;
 use URI::Escape;
 
-our $VERSION = 0.04;
+our $VERSION = 0.05;
 our $errstr = undef;
 
 sub login

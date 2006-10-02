@@ -1,5 +1,6 @@
 bin/utv_usage_applet.pl
 bin/utv_usage_tray.pl
+bin/guiperl.ico
 Changes
 lib/Business/UTV.pm
 Makefile.PL
